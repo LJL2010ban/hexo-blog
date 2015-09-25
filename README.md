@@ -4,8 +4,10 @@
 使用的主题是: metro-light
 
 常用命令
+
 1.  hexo new 'name'
     创建文章
+
 2.  hexo page 'name'
     创建页面
   
