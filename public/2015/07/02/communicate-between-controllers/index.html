@@ -1,0 +1,434 @@
+<!DOCTYPE HTML>
+
+<html lang="en">
+  
+<head>
+  <meta charset="utf-8">
+  
+  <title>angular.JS的controller之间如何正确的通信 | 袁旭佳的blog</title>
+  <meta name="author" content="Aaron Yuan">
+  
+  <meta name="description" content="这里讲记录下袁旭佳编程之旅的点滴">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="angular.JS的controller之间如何正确的通信"/>
+  <meta property="og:site_name" content="袁旭佳的blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  
+    <meta http-equiv="Content-Language" content="en"/>
+  
+
+  <link href="/img/favicon.png" rel="icon">
+  
+    <link rel="apple-touch-icon" href="/img/apple-icon.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/apple-icon.png">
+    
+
+  <link rel="alternate" href="/atom.xml" title="袁旭佳的blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  
+  <style type="text/css">
+  /* Tim Pietrusky advanced checkbox hack (Android <= 4.1.2) */
+body{ -webkit-animation: bugfix infinite 1s; }
+@-webkit-keyframes bugfix { from {padding:0;} to {padding:0;} }
+
+  
+
+  
+    article .post-content-index .entry{max-height: 550px; overflow:hidden;}
+  
+</style>
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'null', 'auto');
+  ga('send', 'pageview');
+ 
+</script>
+
+
+
+
+  
+    
+      <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400|Playball' rel='stylesheet' type='text/css'>
+    
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.1.min.js"></script>
+
+  
+
+
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="padding">
+	<div class="alignleft logo">
+	  <h1><a href="/">袁旭佳的blog</a></h1>
+	</div>
+	<nav id="main-nav" class="alignright">
+		<input type="checkbox" id="toggle" />
+		<label for="toggle" class="toggle" data-open="Main Menu" data-close="Close Menu" onclick><i class="fa fa-bars"></i></label>
+	  <ul class="menu">
+	    
+	      <li><a href="/">Home</a></li>
+	    
+	      <li><a href="/archives">Archives</a></li>
+	    
+	      <li><a href="/yuanxj/index.html">AboutMe</a></li>
+	    
+	    
+	  </ul>
+	</nav>
+	<div class="clearfix"></div>
+</div>
+</header>
+  <div id="page-heading-wrap">
+  	<div class="inner">
+      <div class="padding">
+    		
+          <h1>angular.JS的controller之间如何正确的通信</h1>
+          <ul>
+            <li>
+              <span class="heading-span">Posted on: </span>
+              <time datetime="2015-07-02T01:44:04.000Z">2015-07-02</time>
+            </li>
+            
+              <li>
+                <span class="heading-span">By: </span>
+
+                
+                  <a href="/">Aaron Yuan</a>
+                
+
+              </li>
+            
+            <li>
+              <span class="heading-span">With: </span>
+              
+            </li>
+          </ul>
+        
+      </div>
+  	</div>
+  </div>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper" class="padding"><article class="post">
+  
+  
+    <div class="post-content">
+  
+      
+      <div class="entry">
+        
+          <p>AngularJS中的controller是个函数，用来向视图的作用域（$scope）添加额外的功能，我们用它来给作用域对象设置初始状态，并添加自定义行为。</p>
+<p>当我们在创建新的控制器时，angularJS会帮我们生成并传递一个新的$scope对象给这个controller,在angularJS应用的中的任何一个部分，都有父级作用域的存在，顶级就是ng-app所在的层级，它的父级作用域就是$rootScope。</p>
+<p>每个$scope的$root指向$rootScope, $cope.$parent指向父级作用域。</p>
+<p>cotroller之间的通信本质上是当前的controller所在的$scope如何跟其他controller上的$scope进行通信。</p>
+<p>通常有3中解决方式：</p>
+<ul>
+<li>利用作用域继承的原理，子控制器访问父级控制器中的内容。</li>
+<li>使用angularJS中的事件，也就是使用$on,$emit,$broadcast进行消息传递</li>
+<li>使用angularJS中的服务</li>
+</ul>
+<h2 id="第一种方式">第一种方式</h2><p>即作用域嵌套作用域，有一定的使用限制，需要作用域嵌套起来，在实际开发中这种场景相对比较少，但也不是没有，这种方式更简单直接。</p>
+<p>angularJS中默认情况下，当前作用域中无法找到某个属性时，就会在父级作用域中进行查找，若找不到直至查找到$rootScope。 如果在$rootScope中也无法找到程序依旧运行，但视图不会更新。</p>
+<p><strong>示例</strong></p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//Javascript</span><br><span class="line">app.controller('ParentController', function($scope) &#123; </span><br><span class="line">	$scope.<span class="keyword">person</span> = &#123;greeted: false&#125;;&#125;);app.controller('ChildController', function($scope) &#123; 	$scope.sayHello = function() &#123;   	     $scope.<span class="keyword">person</span>.name = 'Ari Lerner';   	&#125;;&#125;);</span><br><span class="line">//HTML</span><br><span class="line"> &lt;div ng-controller=<span class="string">"ParentController"</span>&gt;      &lt;div ng-controller=<span class="string">"ChildController"</span>&gt;        &lt;a ng-click=<span class="string">"sayHello()"</span>&gt;<span class="keyword">Say</span> hello&lt;/a&gt;      &lt;/div&gt;      &#123;&#123; <span class="keyword">person</span> &#125;&#125;    &lt;/div&gt;</span><br><span class="line">//result   &#123;<span class="string">"greeted"</span>:true, <span class="string">"name"</span>: <span class="string">"Ari Lerner"</span>&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="第二种方式">第二种方式</h2><p>因为作用域是有层次的，所以可以利用作用域链传递事件。</p>
+<p>传递事件有2种方式：</p>
+<ul>
+<li>$broadcast: 触发的事件要通知整个事件系统（允许任意作用域处理这个事件）就要向下传播。</li>
+<li>$emit: 如果要提醒一个全局模块，需要通知更高层次的作用域时（例如$rootscope）需要把事件向上传递。</li>
+</ul>
+<p>作用域上使用$on进行事件监听。</p>
+<p><strong>示例</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">app.controller(<span class="string">'ParentController'</span>, <span class="function"><span class="keyword">function</span><span class="params">(<span class="variable">$scope</span>)</span> </span>&#123; </span><br><span class="line">	<span class="variable">$scope</span>.<span class="variable">$on</span>(<span class="string">'$fromSubControllerClick'</span>, <span class="function"><span class="keyword">function</span><span class="params">(e,data)</span></span>&#123;</span><br><span class="line">		console.log(data); <span class="comment">// hello</span></span><br><span class="line">	&#125;);</span><br><span class="line">&#125;);</span><br><span class="line">app.controller(<span class="string">'ChildController'</span>, <span class="function"><span class="keyword">function</span><span class="params">(<span class="variable">$scope</span>)</span> </span>&#123;</span><br><span class="line"> 	<span class="variable">$scope</span>.sayHello = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line"> 		<span class="variable">$scope</span>.<span class="variable">$emit</span>(<span class="string">'$fromSubControllerClick'</span>,<span class="string">'hello'</span>);</span><br><span class="line">   	&#125;;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">//HTML</span></span><br><span class="line"> &lt;div ng-controller=<span class="string">"ParentController"</span>&gt;</span><br><span class="line">      &lt;div ng-controller=<span class="string">"ChildController"</span>&gt;</span><br><span class="line">        &lt;a ng-click=<span class="string">"sayHello()"</span>&gt;Say hello&lt;/a&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    &lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<p>在这里想要说的另外一个问题就是事件传播的性能问题，$broadcast+$on的方式回通知所有的子作用域，这里就会有性能问题，所以推荐使用$emit+$on的方式,为了进一步提升性能，定义的事件处理函数要在作用域销毁时一起释放掉。</p>
+<p>使用$emit+$on的方式需要我们将事件监听绑定在$rootScope上，例如：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">angular</span><br><span class="line">    .module(<span class="string">'MyApp'</span>)</span><br><span class="line">    .controller(<span class="string">'MyController'</span>, [<span class="string">'$scope'</span>, <span class="string">'$rootScope'</span>, <span class="function"><span class="keyword">function</span> <span class="title">MyController</span><span class="params">(<span class="variable">$scope</span>, <span class="variable">$rootScope</span>)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">var</span> unbind = <span class="variable">$rootScope</span>.<span class="variable">$on</span>(<span class="string">'someComponent.someCrazyEvent'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span><br><span class="line">                console.log(<span class="string">'foo'</span>);</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">            <span class="variable">$scope</span>.<span class="variable">$on</span>(<span class="string">'$destroy'</span>, unbind);</span><br><span class="line">        &#125;</span><br><span class="line">    ]);</span><br></pre></td></tr></table></figure>
+<p>但是这种方式有点繁琐，定义多个事件处理函数时整个人都不好了，所以我们来改进一下</p>
+<p>利用装饰器来定义一个新的事件绑定函数：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">angular</span><br><span class="line">    .module(<span class="string">'MyApp'</span>)</span><br><span class="line">    .config([<span class="string">'$provide'</span>, <span class="function"><span class="keyword">function</span><span class="params">(<span class="variable">$provide</span>)</span></span>&#123;</span><br><span class="line">        <span class="variable">$provide</span>.decorator(<span class="string">'$rootScope'</span>, [<span class="string">'$delegate'</span>, <span class="function"><span class="keyword">function</span><span class="params">(<span class="variable">$delegate</span>)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">            Object.defineProperty(<span class="variable">$delegate</span>.constructor.prototype, <span class="string">'$onRootScope'</span>, &#123;</span><br><span class="line">                value: <span class="function"><span class="keyword">function</span><span class="params">(name, listener)</span></span>&#123;</span><br><span class="line">                    <span class="keyword">var</span> unsubscribe = <span class="variable">$delegate</span>.<span class="variable">$on</span>(name, listener);</span><br><span class="line">                    this.<span class="variable">$on</span>(<span class="string">'$destroy'</span>, unsubscribe);</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">return</span> unsubscribe;</span><br><span class="line">                &#125;,</span><br><span class="line">                enumerable: <span class="keyword">false</span></span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> <span class="variable">$delegate</span>;</span><br><span class="line">        &#125;]);</span><br><span class="line">    &#125;]);</span><br></pre></td></tr></table></figure>
+<p>那么我们在控制器中定义事件处理函数时：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">angular</span><br><span class="line">    .module(<span class="string">'MyApp'</span>)</span><br><span class="line">    .controller(<span class="string">'MyController'</span>, [<span class="string">'$scope'</span>, <span class="function"><span class="keyword">function</span> <span class="title">MyController</span><span class="params">(<span class="variable">$scope</span>)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">            <span class="variable">$scope</span>.<span class="variable">$onRootScope</span>(<span class="string">'someComponent.someCrazyEvent'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span><br><span class="line">                console.log(<span class="string">'foo'</span>);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    ]);</span><br></pre></td></tr></table></figure>
+<p><strong>个人强烈推荐此种做法</strong></p>
+<h2 id="第三种方式">第三种方式</h2><p>利用angularJS中service单例模式的特性，服务(service)提供了一种能在应用的整个生命周期内保持数据的方式，能够在控制器之间进行通信，且能保证数据的一致性。</p>
+<p>一般我们都会封装server来为应用提供访问数据的接口，或者跟远程进行数据交互。</p>
+<p><strong>示例</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myApp = angular.module(<span class="string">"myApp"</span>, []);</span><br><span class="line">myApp.factory(<span class="string">'Data'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    name: <span class="string">"Ting"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line">myApp.controller(<span class="string">'FirstCtrl'</span>, <span class="function"><span class="keyword">function</span><span class="params">(<span class="variable">$scope</span>, Data)</span> </span>&#123;</span><br><span class="line">  <span class="variable">$scope</span>.data = Data;</span><br><span class="line"></span><br><span class="line">  <span class="variable">$scope</span>.setName = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Data.name = <span class="string">"Jack"</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">myApp.controller(<span class="string">'SecondCtrl'</span>, <span class="function"><span class="keyword">function</span><span class="params">(<span class="variable">$scope</span>, Data)</span> </span>&#123;</span><br><span class="line">  <span class="variable">$scope</span>.data = Data;</span><br><span class="line"></span><br><span class="line">  <span class="variable">$scope</span>.setName = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Data.name = <span class="string">"Moby"</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="参考资料">参考资料</h2><ul>
+<li><p><a href="http://stackoverflow.com/questions/11252780/whats-the-correct-way-to-communicate-between-controllers-in-angularjs/19498009#19498009" target="_blank" rel="external">whats the correct way to conmmunicate between controllers</a></p>
+</li>
+<li><p><a href="http://www.angularjs.cn/A07b" target="_blank" rel="external">controller间共享数据</a></p>
+</li>
+<li><a href="http://segmentfault.com/a/1190000000639592" target="_blank" rel="external">controller间如何通信</a></li>
+</ul>
+
+        
+      </div>
+      <footer>
+        
+          
+  
+  <div class="categories">
+    <a href="/categories/angularjs/">angularjs</a>
+  </div>
+
+          
+  
+  <div class="tags">
+    <a href="/tags/angularjs/">angularjs</a>, <a href="/tags/experience/">experience</a>, <a href="/tags/javascript/">javascript</a>
+  </div>
+
+          <div class="share">
+  
+
+    
+
+    
+      <div class="g-plusone"></div>
+
+      <script type="text/javascript">
+        window.___gcfg = {lang: 'en-GB'};
+
+        (function() {
+          var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+          po.src = 'https://apis.google.com/js/platform.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+        })();
+      </script>
+    
+
+    
+  
+</div>
+          
+<nav class="article-nav clearfix">
+ 
+ <div class="article-prev" >
+ <a href="/2015/07/07/learn-flexbox/" title="学习flexbox弹性布局">
+  <i class="fa fa-long-arrow-left"></i>
+  <span>
+  学习flexbox弹性布局</span>
+</a>
+</div>
+
+
+<div class="article-next">
+<a href="/2015/07/01/proxy-for-mobile/"  title="使用gas&amp;charles为移动端搭建测试环境">
+ <span>使用gas&amp;charles为移动端搭建测试环境
+</span>
+<i class="fa fa-long-arrow-right"></i>
+</a>
+</div>
+
+</nav>
+
+        
+        <div class="clearfix"></div>
+      </footer>
+    </div>
+</article>
+
+
+<section id="comment">
+  <h2 class="title">留言</h2>
+
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright"><div class="padding">
+	
+	  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜尋">
+    <input type="hidden" name="q" value="site:yuanxj1024.github.io">
+  </form>
+</div>
+	
+	  
+<div class="widget recent-post">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2015/09/17/working/">加班的感触</a>
+      </li>
+    
+      <li>
+        <a href="/2015/09/12/javascript-module/">Javascript模块化</a>
+      </li>
+    
+      <li>
+        <a href="/2015/08/04/ionic-commonds/">常用Ionic 命令整理</a>
+      </li>
+    
+      <li>
+        <a href="/2015/08/03/svg-and-canvas-library/">流行的svg/canvas动画库</a>
+      </li>
+    
+      <li>
+        <a href="/2015/07/22/debug-for-X5/">腾讯X5浏览器调试</a>
+      </li>
+    
+  </ul>
+</div>
+
+	
+	  
+<div class="widget category">
+  <h3 class="title">分類</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Tools/">Tools</a><small>4</small></li>
+  
+    <li><a href="/categories/angularjs/">angularjs</a><small>3</small></li>
+  
+    <li><a href="/categories/css/">css</a><small>4</small></li>
+  
+    <li><a href="/categories/experience/">experience</a><small>1</small></li>
+  
+    <li><a href="/categories/ionic/">ionic</a><small>1</small></li>
+  
+    <li><a href="/categories/javascript/">javascript</a><small>3</small></li>
+  
+    <li><a href="/categories/life/">life</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+	
+	  
+<div class="widget tag">
+  <h3 class="title">標籤</h3>
+  
+    <a href="/tags/angularjs/">angularjs<small>3</small></a>
+  
+    <a href="/tags/animation/">animation<small>3</small></a>
+  
+    <a href="/tags/canvas/">canvas<small>1</small></a>
+  
+    <a href="/tags/charles/">charles<small>1</small></a>
+  
+    <a href="/tags/chrome/">chrome<small>2</small></a>
+  
+    <a href="/tags/cmd/">cmd<small>1</small></a>
+  
+    <a href="/tags/css/">css<small>1</small></a>
+  
+    <a href="/tags/css3/">css3<small>1</small></a>
+  
+    <a href="/tags/debug/">debug<small>2</small></a>
+  
+    <a href="/tags/directive/">directive<small>1</small></a>
+  
+    <a href="/tags/experience/">experience<small>2</small></a>
+  
+    <a href="/tags/flexbox/">flexbox<small>1</small></a>
+  
+    <a href="/tags/frent-end/">frent-end<small>1</small></a>
+  
+    <a href="/tags/front-end/">front-end<small>3</small></a>
+  
+    <a href="/tags/gasmark/">gasmark<small>1</small></a>
+  
+    <a href="/tags/github/">github<small>1</small></a>
+  
+    <a href="/tags/gulp/">gulp<small>1</small></a>
+  
+    <a href="/tags/hexo/">hexo<small>1</small></a>
+  
+    <a href="/tags/ionic/">ionic<small>1</small></a>
+  
+    <a href="/tags/javascipt/">javascipt<small>0</small></a>
+  
+    <a href="/tags/javascript/">javascript<small>4</small></a>
+  
+    <a href="/tags/libray/">libray<small>1</small></a>
+  
+    <a href="/tags/life/">life<small>1</small></a>
+  
+    <a href="/tags/plugin/">plugin<small>1</small></a>
+  
+    <a href="/tags/service/">service<small>1</small></a>
+  
+    <a href="/tags/svg/">svg<small>1</small></a>
+  
+    <a href="/tags/tool/">tool<small>4</small></a>
+  
+    <a href="/tags/webapp/">webapp<small>2</small></a>
+  
+    <a href="/tags/弹性布局/">弹性布局<small>1</small></a>
+  
+</div>
+
+	
+</div></aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="padding">
+	<div class="alignleft">
+	  
+	  &copy; 2015 Aaron Yuan
+	  
+	  Powerd by <a href="http://hexo.io/" target="_blank">hexo</a>
+	  and Theme by <a href="https://github.com/halfer53/metro-light" target="_blank">metro-light</a>
+	</div>
+
+	<div class="alignright">
+		
+		
+		
+		
+		
+		
+		
+	</div>
+
+	<div class="clearfix"></div>
+</div>
+
+<div class="scroll-top"><i class="fa fa-arrow-circle-up"></i></div></footer>
+  
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/3.0.4/jquery.imagesloaded.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+<script type="text/javascript">
+$(window).scroll(function() {
+
+    if($(this).scrollTop() > 400) {
+        $('.scroll-top').fadeIn(200);
+    } else {
+        $('.scroll-top').fadeOut(200);
+    }
+});
+
+$('.scroll-top').bind('click', function(e) {
+    e.preventDefault();
+    $('body,html').animate({scrollTop:0},200);
+});
+</script>
+
+
+</body>
+</html>

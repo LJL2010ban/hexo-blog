@@ -1,0 +1,461 @@
+<!DOCTYPE HTML>
+
+<html lang="en">
+  
+<head>
+  <meta charset="utf-8">
+  
+  <title>流行的svg/canvas动画库 | 袁旭佳的blog</title>
+  <meta name="author" content="Aaron Yuan">
+  
+  <meta name="description" content="这里讲记录下袁旭佳编程之旅的点滴">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="流行的svg/canvas动画库"/>
+  <meta property="og:site_name" content="袁旭佳的blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  
+    <meta http-equiv="Content-Language" content="en"/>
+  
+
+  <link href="/img/favicon.png" rel="icon">
+  
+    <link rel="apple-touch-icon" href="/img/apple-icon.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/apple-icon.png">
+    
+
+  <link rel="alternate" href="/atom.xml" title="袁旭佳的blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  
+  <style type="text/css">
+  /* Tim Pietrusky advanced checkbox hack (Android <= 4.1.2) */
+body{ -webkit-animation: bugfix infinite 1s; }
+@-webkit-keyframes bugfix { from {padding:0;} to {padding:0;} }
+
+  
+
+  
+    article .post-content-index .entry{max-height: 550px; overflow:hidden;}
+  
+</style>
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'null', 'auto');
+  ga('send', 'pageview');
+ 
+</script>
+
+
+
+
+  
+    
+      <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400|Playball' rel='stylesheet' type='text/css'>
+    
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.1.min.js"></script>
+
+  
+
+
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="padding">
+	<div class="alignleft logo">
+	  <h1><a href="/">袁旭佳的blog</a></h1>
+	</div>
+	<nav id="main-nav" class="alignright">
+		<input type="checkbox" id="toggle" />
+		<label for="toggle" class="toggle" data-open="Main Menu" data-close="Close Menu" onclick><i class="fa fa-bars"></i></label>
+	  <ul class="menu">
+	    
+	      <li><a href="/">Home</a></li>
+	    
+	      <li><a href="/archives">Archives</a></li>
+	    
+	      <li><a href="/yuanxj/index.html">AboutMe</a></li>
+	    
+	    
+	  </ul>
+	</nav>
+	<div class="clearfix"></div>
+</div>
+</header>
+  <div id="page-heading-wrap">
+  	<div class="inner">
+      <div class="padding">
+    		
+          <h1>流行的svg/canvas动画库</h1>
+          <ul>
+            <li>
+              <span class="heading-span">Posted on: </span>
+              <time datetime="2015-08-03T05:16:08.000Z">2015-08-03</time>
+            </li>
+            
+              <li>
+                <span class="heading-span">By: </span>
+
+                
+                  <a href="/">Aaron Yuan</a>
+                
+
+              </li>
+            
+            <li>
+              <span class="heading-span">With: </span>
+              
+            </li>
+          </ul>
+        
+      </div>
+  	</div>
+  </div>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper" class="padding"><article class="post">
+  
+  
+    <div class="post-content">
+  
+      
+      <div class="entry">
+        
+          <p>因为需要用到动画，所以收集了一下现在比较流行的一些svg和canvas动画库，收集的不一定很全，主要是一些使用比较多的库。</p>
+<h1 id="SVG">SVG</h1><ul>
+<li><p><a href="http://svgjs.com/" target="_blank" rel="external">SVG.JS</a></p>
+<p>A lightweight library for manipulating and animating SVG.</p>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// create svg drawing</span></span><br><span class="line">      var <span class="title">draw</span> = SVG(<span class="string">'drawing'</span>)</span><br><span class="line">      <span class="comment">// create image</span></span><br><span class="line">      var <span class="built_in">image</span> = <span class="title">draw</span>.<span class="built_in">image</span>(<span class="string">'images/shade.jpg'</span>)</span><br><span class="line">      <span class="built_in">image</span>.<span class="built_in">size</span>(<span class="number">650</span>, <span class="number">650</span>).y(-<span class="number">150</span>)</span><br><span class="line">      <span class="comment">// create text</span></span><br><span class="line">      var <span class="built_in">text</span> = <span class="title">draw</span>.<span class="built_in">text</span>(<span class="string">'SVG.JS'</span>).move(<span class="number">300</span>, <span class="number">0</span>)</span><br><span class="line">      <span class="built_in">text</span>.font(&#123;</span><br><span class="line">        family: <span class="string">'Source Sans Pro'</span></span><br><span class="line">      , <span class="built_in">size</span>: <span class="number">180</span></span><br><span class="line">      , anchor: <span class="string">'middle'</span></span><br><span class="line">      , leading: <span class="number">1</span></span><br><span class="line">      &#125;)</span><br><span class="line">      <span class="comment">// clip image with text</span></span><br><span class="line">      <span class="built_in">image</span>.clipWith(<span class="built_in">text</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="http://snapsvg.io/" target="_blank" rel="external">Snap.svg</a></p>
+<p>SVG is an excellent way to create interactive, resolution-independent vector graphics that will look great on any size screen. And the Snap.svg JavaScript library makes working with your SVG assets as easy as jQuery makes working with the DOM.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">	// First lets <span class="operator"><span class="keyword">create</span> our drawing surface out <span class="keyword">of</span> existing SVG element</span><br><span class="line">// <span class="keyword">If</span> you want <span class="keyword">to</span> <span class="keyword">create</span> new surface just provide dimensions</span><br><span class="line">// <span class="keyword">like</span> s = Snap(<span class="number">800</span>, <span class="number">600</span>);</span></span><br><span class="line">var s = Snap("#svg");</span><br><span class="line">// Lets <span class="operator"><span class="keyword">create</span> big circle <span class="keyword">in</span> the middle:</span><br><span class="line"><span class="keyword">var</span> bigCircle = s.circle(<span class="number">150</span>, <span class="number">150</span>, <span class="number">100</span>);</span></span><br><span class="line">// By default its black, lets <span class="operator"><span class="keyword">change</span> its attributes</span><br><span class="line">bigCircle.attr(&#123;</span><br><span class="line">    fill: <span class="string">"#bada55"</span>,</span><br><span class="line">    stroke: <span class="string">"#000"</span>,</span><br><span class="line">    strokeWidth: <span class="number">5</span></span><br><span class="line">&#125;);</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p><a href="http://raphaeljs.com/" target="_blank" rel="external">Raphael</a></p>
+<p>Raphaël is a small JavaScript library that should simplify your work with vector graphics on the web. If you want to create your own specific chart or image crop and rotate widget, for example, you can achieve it simply and easily with this library.</p>
+<figure class="highlight openscad"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">	<span class="comment">// Creates canvas 320 × 200 at 10, 50</span></span><br><span class="line">var paper = Raphael<span class="params">(<span class="number">10</span>, <span class="number">50</span>, <span class="number">320</span>, <span class="number">200</span>)</span>;</span><br><span class="line"><span class="comment">// Creates circle at x = 50, y = 40, with radius 10</span></span><br><span class="line">var <span class="built_in">circle</span> = paper.<span class="built_in">circle</span><span class="params">(<span class="number">50</span>, <span class="number">40</span>, <span class="number">10</span>)</span>;</span><br><span class="line"><span class="comment">// Sets the fill attribute of the circle to red (#f00)</span></span><br><span class="line"><span class="built_in">circle</span>.attr<span class="params">(<span class="string">"fill"</span>, <span class="string">"#f00"</span>)</span>;</span><br><span class="line"><span class="comment">// Sets the stroke attribute of the circle to white</span></span><br><span class="line"><span class="built_in">circle</span>.attr<span class="params">(<span class="string">"stroke"</span>, <span class="string">"#fff"</span>)</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://bonsaijs.org/" target="_blank" rel="external">bonsai</a></p>
+<p>A lightweight graphics library with an intuitive graphics API and an SVG renderer.</p>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">	<span class="comment">//Draw a 100x200 rectangle to the stage at &#123;0,0&#125;:</span></span><br><span class="line">var r = <span class="keyword">new</span> Rect(<span class="number">0</span>, <span class="number">0</span>, <span class="number">100</span>, <span class="number">200</span>).addTo(stage);</span><br><span class="line"><span class="comment">//Fill it:</span></span><br><span class="line">r.<span class="built_in">fill</span>(<span class="string">'blue'</span>);</span><br><span class="line"><span class="comment">//Change your mind... Make it darker:</span></span><br><span class="line">r.<span class="built_in">fill</span>(<span class="built_in">color</span>(<span class="string">'green'</span>).darker());</span><br><span class="line"><span class="comment">//Animate it:</span></span><br><span class="line">r.animate(<span class="string">'400ms'</span>, &#123;</span><br><span class="line">  x: <span class="number">50</span>,</span><br><span class="line">  y: <span class="number">50</span>,</span><br><span class="line">  <span class="variable">width</span>: <span class="number">200</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://maxwellito.github.io/vivus/" target="_blank" rel="external">vivus</a></p>
+<p>Vivus is a lightweight JavaScript class (with no dependencies) that allows you to animate SVGs, giving them the appearence of being drawn. </p>
+</li>
+<li><p><a href="https://code.google.com/p/svgweb/" target="_blank" rel="external">svgweb</a>    </p>
+<p>SVG Web is a JavaScript library which provides SVG support on many browsers, including Internet Explorer, Firefox, and Safari. Using the library plus native SVG support you can instantly target ~95% of the existing installed web base.</p>
+</li>
+</ul>
+<ul>
+<li><p><a href="http://processingjs.org/" target="_blank" rel="external">Processing</a></p>
+<p>Processing.js is the sister project of the popular Processing visual programming language, designed for the web. Processing.js makes your data visualizations, digital art, interactive animations, educational graphs, video games, etc. work using web standards and without any plug-ins. </p>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">	<span class="comment">// Global variables</span></span><br><span class="line"><span class="built_in">float</span> radius = <span class="number">50.0</span>;</span><br><span class="line"><span class="built_in">int</span> X, Y;</span><br><span class="line"><span class="built_in">int</span> nX, nY;</span><br><span class="line"><span class="built_in">int</span> delay = <span class="number">16</span>;</span><br><span class="line"><span class="comment">// Setup the Processing Canvas</span></span><br><span class="line"><span class="keyword">void</span> <span class="title">setup</span>()&#123;</span><br><span class="line">  <span class="built_in">size</span>( <span class="number">200</span>, <span class="number">200</span> );</span><br><span class="line">  <span class="built_in">strokeWeight</span>( <span class="number">10</span> );</span><br><span class="line">  <span class="built_in">frameRate</span>( <span class="number">15</span> );</span><br><span class="line">  X = <span class="variable">width</span> / <span class="number">2</span>;</span><br><span class="line">  Y = <span class="variable">height</span> / <span class="number">2</span>;</span><br><span class="line">  nX = X;</span><br><span class="line">  nY = Y;  </span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Main draw loop</span></span><br><span class="line"><span class="keyword">void</span> <span class="title">draw</span>()&#123;  </span><br><span class="line">  radius = radius + <span class="built_in">sin</span>( <span class="variable">frameCount</span> / <span class="number">4</span> );  </span><br><span class="line">  <span class="comment">// Track circle to new destination</span></span><br><span class="line">  X+=(nX-X)/delay;</span><br><span class="line">  Y+=(nY-Y)/delay;  </span><br><span class="line">  <span class="comment">// Fill canvas grey</span></span><br><span class="line">  <span class="built_in">background</span>( <span class="number">100</span> );  </span><br><span class="line">  <span class="comment">// Set fill-color to blue</span></span><br><span class="line">  <span class="built_in">fill</span>( <span class="number">0</span>, <span class="number">121</span>, <span class="number">184</span> );</span><br><span class="line">  <span class="comment">// Set stroke-color white</span></span><br><span class="line">  <span class="built_in">stroke</span>(<span class="number">255</span>);  </span><br><span class="line">  <span class="comment">// Draw circle</span></span><br><span class="line">  <span class="built_in">ellipse</span>( X, Y, radius, radius );                  </span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Set circle's next destination</span></span><br><span class="line"><span class="keyword">void</span> <span class="built_in">mouseMoved</span>()&#123;</span><br><span class="line">  nX = <span class="variable">mouseX</span>;</span><br><span class="line">  nY = <span class="variable">mouseY</span>;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="http://julian.com/research/velocity/" target="_blank" rel="external">Velocity.js</a>    </p>
+<p>Velocity is an animation engine with the same API as jQuery’s $.animate(). It works with and without jQuery. It’s incredibly fast, and it features color animation, transforms, loops, easings, SVG support, and scrolling. It is the best of jQuery and CSS transitions combined.</p>
+<figure class="highlight openscad"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">	<span class="comment">// Animate width, then animate height.</span></span><br><span class="line">$<span class="params">(<span class="string">"div"</span>)</span></span><br><span class="line">    .velocity<span class="params">(&#123; width: <span class="number">75</span> &#125;, <span class="number">1500</span>)</span></span><br><span class="line">    .velocity<span class="params">(&#123; height: <span class="number">0</span> &#125;, <span class="number">1250</span>)</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="http://keith-wood.name/svgRef.html" target="_blank" rel="external">jQuery SVG</a>    </p>
+<p>A jQuery plugin that lets you interact with an SVG canvas.</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">	var svg = $(<span class="string">'#svgintro'</span>).svg(<span class="string">'get'</span>); </span><br><span class="line">svg.circle(<span class="number">130</span>, <span class="number">75</span>, <span class="number">50</span>, &#123;<span class="string">fill:</span> <span class="string">'none'</span>, <span class="string">stroke:</span> <span class="string">'red'</span>, <span class="string">strokeWidth:</span> <span class="number">3</span>&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="Canvas">Canvas</h1><ul>
+<li><p><a href="http://kineticjs.com/" target="_blank" rel="external">KineticJS</a></p>
+<p>KineticJS is a fast, robust, HTML5 Canvas Library that is no longer maintained.</p>
+</li>
+<li><p><a href="http://fabricjs.com/" target="_blank" rel="external">Fabric</a></p>
+<p>Fabric.js is a powerful and simple<br>Javascript HTML5 canvas library</p>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">	<span class="regexp">//</span> reference canvas element (<span class="reserved">with</span> id=<span class="string">"c"</span>)</span><br><span class="line"><span class="reserved">var</span> canvasEl = <span class="built_in">document</span>.getElementById(<span class="string">'c'</span>);</span><br><span class="line"><span class="regexp">//</span> get <span class="number">2</span>d context to draw <span class="literal">on</span> (the <span class="string">"bitmap"</span> mentioned earlier)</span><br><span class="line"><span class="reserved">var</span> ctx = canvasEl.getContext(<span class="string">'2d'</span>);</span><br><span class="line"><span class="regexp">//</span> set fill color <span class="keyword">of</span> context</span><br><span class="line">ctx.fillStyle = <span class="string">'red'</span>;</span><br><span class="line"><span class="regexp">//</span> create rectangle at a <span class="number">100</span>,<span class="number">100</span> point, <span class="reserved">with</span> <span class="number">20</span>x20 dimensions</span><br><span class="line">ctx.fillRect(<span class="number">100</span>, <span class="number">100</span>, <span class="number">20</span>, <span class="number">20</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="http://paperjs.org/" target="_blank" rel="external">Paper.js</a></p>
+<p>Paper.js is an open source vector graphics scripting framework that runs on top of the HTML5 Canvas. It offers a clean Scene Graph / Document Object Model and a lot of powerful functionality to create and work with vector graphics and bezier curves, all neatly wrapped up in a well designed, consistent and clean programming interface.</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Create a Paper.js Path to draw a line into it:</span></span><br><span class="line"><span class="built_in">var</span> path <span class="subst">=</span> <span class="literal">new</span> Path();</span><br><span class="line"><span class="comment">// Give the stroke a color</span></span><br><span class="line">path<span class="built_in">.</span>strokeColor <span class="subst">=</span> <span class="string">'black'</span>;</span><br><span class="line"><span class="built_in">var</span> start <span class="subst">=</span> <span class="literal">new</span> Point(<span class="number">100</span>, <span class="number">100</span>);</span><br><span class="line"><span class="comment">// Move to start and draw a line from there</span></span><br><span class="line">path<span class="built_in">.</span>moveTo(start);</span><br><span class="line"><span class="comment">// <span class="doctag"><span class="keyword">Note</span></span> the plus operator on Point objects.</span></span><br><span class="line"><span class="comment">// PaperScript does that for us, and much more!</span></span><br><span class="line">path<span class="built_in">.</span>lineTo(start <span class="subst">+</span> <span class="preprocessor">[</span> <span class="number">100</span>, <span class="subst">-</span><span class="number">50</span> <span class="preprocessor">]</span><span class="markup">);</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p><a href="http://www.createjs.com/easeljs" target="_blank" rel="external">Easel.js</a></p>
+<p>A JavaScript library that makes working with the HTML5 Canvas element easy. Useful for creating games, generative art, and other highly graphical experiences.</p>
+<figure class="highlight openscad"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">	<span class="comment">//html</span></span><br><span class="line">	&lt;body onload=<span class="string">"init();"</span>&gt;</span><br><span class="line">  &lt;canvas id=<span class="string">"demoCanvas"</span> width=<span class="string">"500"</span> height=<span class="string">"300"</span>&gt;&lt;/canvas&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">	<span class="comment">//js</span></span><br><span class="line">	var stage = new createjs.Stage<span class="params">(<span class="string">"demoCanvas"</span>)</span>;</span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	var <span class="built_in">circle</span> = new createjs.Shape<span class="params">()</span>;</span><br><span class="line"><span class="built_in">circle</span>.graphics.beginFill<span class="params">(<span class="string">"DeepSkyBlue"</span>)</span>.drawCircle<span class="params">(<span class="number">0</span>, <span class="number">0</span>, <span class="number">50</span>)</span>;</span><br><span class="line"><span class="built_in">circle</span>.x = <span class="number">100</span>;</span><br><span class="line"><span class="built_in">circle</span>.y = <span class="number">100</span>;</span><br><span class="line">stage.addChild<span class="params">(circle)</span>;</span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	stage.update<span class="params">()</span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p><a href="http://www.pixijs.com/" target="_blank" rel="external">Pixi.js</a></p>
+<p>2D webGL renderer with canvas fallback</p>
+<figure class="highlight openscad"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">	var renderer = PIXI.autoDetectRenderer<span class="params">(<span class="number">800</span>, <span class="number">600</span>,&#123;backgroundColor : <span class="number">0</span>x1099bb&#125;)</span>;</span><br><span class="line">document.body.appendChild<span class="params">(renderer.view)</span>;</span><br><span class="line"><span class="comment">// create the root of the scene graph</span></span><br><span class="line">var stage = new PIXI.Container<span class="params">()</span>;</span><br><span class="line"><span class="comment">// create a texture from an image path</span></span><br><span class="line">var texture = PIXI.Texture.fromImage<span class="params">('_assets/basics/bunny.png')</span>;</span><br><span class="line"><span class="comment">// create a new Sprite using the texture</span></span><br><span class="line">var bunny = new PIXI.Sprite<span class="params">(texture)</span>;</span><br><span class="line"><span class="comment">// center the sprite's anchor point</span></span><br><span class="line">bunny.anchor.x = <span class="number">0.5</span>;</span><br><span class="line">bunny.anchor.y = <span class="number">0.5</span>;</span><br><span class="line"><span class="comment">// move the sprite to the center of the screen</span></span><br><span class="line">bunny.position.x = <span class="number">200</span>;</span><br><span class="line">bunny.position.y = <span class="number">150</span>;</span><br><span class="line">stage.addChild<span class="params">(bunny)</span>;</span><br><span class="line"><span class="comment">// start animating</span></span><br><span class="line">animate<span class="params">()</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">animate</span><span class="params">()</span> &#123;</span></span><br><span class="line">    requestAnimationFrame<span class="params">(animate)</span>;</span><br><span class="line">    <span class="comment">// just for fun, let's rotate mr rabbit a little</span></span><br><span class="line">    bunny.rotation += <span class="number">0.1</span>;</span><br><span class="line">    <span class="comment">// render the container</span></span><br><span class="line">    renderer.<span class="built_in">render</span><span class="params">(stage)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="http://threejs.org/" target="_blank" rel="external">three.js</a>（3D）</p>
+<p>Three.js is a library that makes WebGL - 3D in the browser - easy to use. While a simple cube in raw WebGL would turn out hundreds of lines of Javascript and shader code, a Three.js equivalent is only a fraction of that.</p>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">	<span class="reserved">var</span> scene = <span class="keyword">new</span> THREE.Scene();</span><br><span class="line"><span class="reserved">var</span> camera = <span class="keyword">new</span> THREE.PerspectiveCamera( <span class="number">75</span>, <span class="built_in">window</span>.innerWidth / <span class="built_in">window</span>.innerHeight, <span class="number">0.1</span>, <span class="number">1000</span> );</span><br><span class="line"></span><br><span class="line"><span class="reserved">var</span> renderer = <span class="keyword">new</span> THREE.WebGLRenderer();</span><br><span class="line">renderer.setSize( <span class="built_in">window</span>.innerWidth, <span class="built_in">window</span>.innerHeight );</span><br><span class="line"><span class="built_in">document</span>.body.appendChild( renderer.domElement );</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+        
+      </div>
+      <footer>
+        
+          
+  
+  <div class="categories">
+    <a href="/categories/javascript/">javascript</a>
+  </div>
+
+          
+  
+  <div class="tags">
+    <a href="/tags/animation/">animation</a>, <a href="/tags/canvas/">canvas</a>, <a href="/tags/frent-end/">frent-end</a>, <a href="/tags/libray/">libray</a>, <a href="/tags/svg/">svg</a>
+  </div>
+
+          <div class="share">
+  
+
+    
+
+    
+      <div class="g-plusone"></div>
+
+      <script type="text/javascript">
+        window.___gcfg = {lang: 'en-GB'};
+
+        (function() {
+          var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+          po.src = 'https://apis.google.com/js/platform.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+        })();
+      </script>
+    
+
+    
+  
+</div>
+          
+<nav class="article-nav clearfix">
+ 
+ <div class="article-prev" >
+ <a href="/2015/08/04/ionic-commonds/" title="常用Ionic 命令整理">
+  <i class="fa fa-long-arrow-left"></i>
+  <span>
+  常用Ionic 命令整理</span>
+</a>
+</div>
+
+
+<div class="article-next">
+<a href="/2015/07/22/debug-for-X5/"  title="腾讯X5浏览器调试">
+ <span>腾讯X5浏览器调试
+</span>
+<i class="fa fa-long-arrow-right"></i>
+</a>
+</div>
+
+</nav>
+
+        
+        <div class="clearfix"></div>
+      </footer>
+    </div>
+</article>
+
+
+<section id="comment">
+  <h2 class="title">留言</h2>
+
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright"><div class="padding">
+	
+	  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜尋">
+    <input type="hidden" name="q" value="site:yuanxj1024.github.io">
+  </form>
+</div>
+	
+	  
+<div class="widget recent-post">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2015/09/17/working/">加班的感触</a>
+      </li>
+    
+      <li>
+        <a href="/2015/09/12/javascript-module/">Javascript模块化</a>
+      </li>
+    
+      <li>
+        <a href="/2015/08/04/ionic-commonds/">常用Ionic 命令整理</a>
+      </li>
+    
+      <li>
+        <a href="/2015/08/03/svg-and-canvas-library/">流行的svg/canvas动画库</a>
+      </li>
+    
+      <li>
+        <a href="/2015/07/22/debug-for-X5/">腾讯X5浏览器调试</a>
+      </li>
+    
+  </ul>
+</div>
+
+	
+	  
+<div class="widget category">
+  <h3 class="title">分類</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Tools/">Tools</a><small>4</small></li>
+  
+    <li><a href="/categories/angularjs/">angularjs</a><small>3</small></li>
+  
+    <li><a href="/categories/css/">css</a><small>4</small></li>
+  
+    <li><a href="/categories/experience/">experience</a><small>1</small></li>
+  
+    <li><a href="/categories/ionic/">ionic</a><small>1</small></li>
+  
+    <li><a href="/categories/javascript/">javascript</a><small>3</small></li>
+  
+    <li><a href="/categories/life/">life</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+	
+	  
+<div class="widget tag">
+  <h3 class="title">標籤</h3>
+  
+    <a href="/tags/angularjs/">angularjs<small>3</small></a>
+  
+    <a href="/tags/animation/">animation<small>3</small></a>
+  
+    <a href="/tags/canvas/">canvas<small>1</small></a>
+  
+    <a href="/tags/charles/">charles<small>1</small></a>
+  
+    <a href="/tags/chrome/">chrome<small>2</small></a>
+  
+    <a href="/tags/cmd/">cmd<small>1</small></a>
+  
+    <a href="/tags/css/">css<small>1</small></a>
+  
+    <a href="/tags/css3/">css3<small>1</small></a>
+  
+    <a href="/tags/debug/">debug<small>2</small></a>
+  
+    <a href="/tags/directive/">directive<small>1</small></a>
+  
+    <a href="/tags/experience/">experience<small>2</small></a>
+  
+    <a href="/tags/flexbox/">flexbox<small>1</small></a>
+  
+    <a href="/tags/frent-end/">frent-end<small>1</small></a>
+  
+    <a href="/tags/front-end/">front-end<small>3</small></a>
+  
+    <a href="/tags/gasmark/">gasmark<small>1</small></a>
+  
+    <a href="/tags/github/">github<small>1</small></a>
+  
+    <a href="/tags/gulp/">gulp<small>1</small></a>
+  
+    <a href="/tags/hexo/">hexo<small>1</small></a>
+  
+    <a href="/tags/ionic/">ionic<small>1</small></a>
+  
+    <a href="/tags/javascipt/">javascipt<small>0</small></a>
+  
+    <a href="/tags/javascript/">javascript<small>4</small></a>
+  
+    <a href="/tags/libray/">libray<small>1</small></a>
+  
+    <a href="/tags/life/">life<small>1</small></a>
+  
+    <a href="/tags/plugin/">plugin<small>1</small></a>
+  
+    <a href="/tags/service/">service<small>1</small></a>
+  
+    <a href="/tags/svg/">svg<small>1</small></a>
+  
+    <a href="/tags/tool/">tool<small>4</small></a>
+  
+    <a href="/tags/webapp/">webapp<small>2</small></a>
+  
+    <a href="/tags/弹性布局/">弹性布局<small>1</small></a>
+  
+</div>
+
+	
+</div></aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="padding">
+	<div class="alignleft">
+	  
+	  &copy; 2015 Aaron Yuan
+	  
+	  Powerd by <a href="http://hexo.io/" target="_blank">hexo</a>
+	  and Theme by <a href="https://github.com/halfer53/metro-light" target="_blank">metro-light</a>
+	</div>
+
+	<div class="alignright">
+		
+		
+		
+		
+		
+		
+		
+	</div>
+
+	<div class="clearfix"></div>
+</div>
+
+<div class="scroll-top"><i class="fa fa-arrow-circle-up"></i></div></footer>
+  
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/3.0.4/jquery.imagesloaded.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+<script type="text/javascript">
+$(window).scroll(function() {
+
+    if($(this).scrollTop() > 400) {
+        $('.scroll-top').fadeIn(200);
+    } else {
+        $('.scroll-top').fadeOut(200);
+    }
+});
+
+$('.scroll-top').bind('click', function(e) {
+    e.preventDefault();
+    $('body,html').animate({scrollTop:0},200);
+});
+</script>
+
+
+</body>
+</html>

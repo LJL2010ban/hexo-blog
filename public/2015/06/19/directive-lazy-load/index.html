@@ -1,0 +1,437 @@
+<!DOCTYPE HTML>
+
+<html lang="en">
+  
+<head>
+  <meta charset="utf-8">
+  
+  <title>directive:lazy-load | 袁旭佳的blog</title>
+  <meta name="author" content="Aaron Yuan">
+  
+  <meta name="description" content="这里讲记录下袁旭佳编程之旅的点滴">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="directive:lazy-load"/>
+  <meta property="og:site_name" content="袁旭佳的blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  
+    <meta http-equiv="Content-Language" content="en"/>
+  
+
+  <link href="/img/favicon.png" rel="icon">
+  
+    <link rel="apple-touch-icon" href="/img/apple-icon.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/apple-icon.png">
+    
+
+  <link rel="alternate" href="/atom.xml" title="袁旭佳的blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  
+  <style type="text/css">
+  /* Tim Pietrusky advanced checkbox hack (Android <= 4.1.2) */
+body{ -webkit-animation: bugfix infinite 1s; }
+@-webkit-keyframes bugfix { from {padding:0;} to {padding:0;} }
+
+  
+
+  
+    article .post-content-index .entry{max-height: 550px; overflow:hidden;}
+  
+</style>
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'null', 'auto');
+  ga('send', 'pageview');
+ 
+</script>
+
+
+
+
+  
+    
+      <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400|Playball' rel='stylesheet' type='text/css'>
+    
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.1.min.js"></script>
+
+  
+
+
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="padding">
+	<div class="alignleft logo">
+	  <h1><a href="/">袁旭佳的blog</a></h1>
+	</div>
+	<nav id="main-nav" class="alignright">
+		<input type="checkbox" id="toggle" />
+		<label for="toggle" class="toggle" data-open="Main Menu" data-close="Close Menu" onclick><i class="fa fa-bars"></i></label>
+	  <ul class="menu">
+	    
+	      <li><a href="/">Home</a></li>
+	    
+	      <li><a href="/archives">Archives</a></li>
+	    
+	      <li><a href="/yuanxj/index.html">AboutMe</a></li>
+	    
+	    
+	  </ul>
+	</nav>
+	<div class="clearfix"></div>
+</div>
+</header>
+  <div id="page-heading-wrap">
+  	<div class="inner">
+      <div class="padding">
+    		
+          <h1>directive:lazy-load</h1>
+          <ul>
+            <li>
+              <span class="heading-span">Posted on: </span>
+              <time datetime="2015-06-19T01:55:20.000Z">2015-06-19</time>
+            </li>
+            
+              <li>
+                <span class="heading-span">By: </span>
+
+                
+                  <a href="/">Aaron Yuan</a>
+                
+
+              </li>
+            
+            <li>
+              <span class="heading-span">With: </span>
+              
+            </li>
+          </ul>
+        
+      </div>
+  	</div>
+  </div>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper" class="padding"><article class="post">
+  
+  
+    <div class="post-content">
+  
+      
+      <div class="entry">
+        
+          <h1 id="自定义指令:图片延迟加载">自定义指令:图片延迟加载</h1><h3 id="前言">前言</h3><p>web App跟web毕竟是不同，考虑到用户在使用web app时的数据流量，已经首次加载速度，所以对于页面的一些图片采用延迟加载还是很必要的，下面记录下自己开发延迟加载指令的过程。</p>
+<h3 id="实现思路">实现思路</h3><p>图片肯定有所以来的容器元素，容器元素在屏幕上的可视范围内的图片要加载进来，所以需要监听容器的滚动事件，计算出当前滚动的位置跟图片的位置判断是否加载图片。</p>
+<p>我在开发该指令时，因为项目中已经有个在图片未加载完成是显示loading条的指令，所以我直接在此基础上进行扩展，目的是对使用该指令的图片进行延迟记在，页面上基本不用改动。</p>
+<h2 id="指令开发">指令开发</h2><ul>
+<li><p>容器指令</p>
+<p>只是用来标记图片所在的容器</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">myApp.directive(<span class="string">'yxjImageContainer'</span>, <span class="function"><span class="keyword">function</span><span class="params">(<span class="variable">$compile</span>)</span></span>&#123;</span><br><span class="line"> 		<span class="keyword">return</span> &#123;</span><br><span class="line">    	restrict: <span class="string">'AC'</span>,</span><br><span class="line">    	controller: [<span class="string">'$scope'</span>, <span class="string">'$element'</span>, <span class="function"><span class="keyword">function</span><span class="params">(<span class="variable">$scope</span>,<span class="variable">$element</span>)</span></span>&#123;</span><br><span class="line">   	  		<span class="variable">$element</span>.data(<span class="string">'yxjImageContainer'</span>, <span class="variable">$element</span>);</span><br><span class="line">   		&#125;]</span><br><span class="line"> 		&#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>图片延迟加载指令</p>
+<p><strong>实现思路</strong></p>
+<ul>
+<li>找到容器元素</li>
+</ul>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> container = element.inheritedData(<span class="string">'yxjImageContainer'</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>需要知道容器的滚动距离</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取容器的滚动距离</span></span><br><span class="line">  <span class="keyword">var</span> _getContainerScrollTop = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(container.scrollTop &amp;&amp; container.scrollTop()) &#123;</span><br><span class="line">      <span class="keyword">return</span> container.scrollTop();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> first = container[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">if</span> (first &amp;&amp; first.pageYOffset !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> first.pageYOffset;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (first &amp;&amp; first.scrollTop) &#123;</span><br><span class="line">      <span class="keyword">return</span> first.scrollTop;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">document</span>.documentElement.scrollTop || <span class="number">0</span>;</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>容器的高度</li>
+</ul>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">var _getContainerInnerHeight = function() &#123;</span><br><span class="line">       <span class="keyword">if</span>(container.innerHeight) &#123;</span><br><span class="line"><span class="command">         return</span> container.innerHeight;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       var <span class="keyword">first</span> = container[<span class="number">0</span>];</span><br><span class="line">       <span class="keyword">if</span>(<span class="keyword">first</span> &amp;&amp; <span class="keyword">first</span>.innerHeight) &#123;</span><br><span class="line"><span class="command">         return</span> <span class="keyword">first</span>.innerHeight;</span><br><span class="line">       &#125; <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">first</span> &amp;&amp; <span class="keyword">first</span>.clientHeight) &#123;</span><br><span class="line"><span class="command">         return</span> <span class="keyword">first</span>.clientHeight;</span><br><span class="line">       &#125;</span><br><span class="line"><span class="command">       return</span> document.documentElement.clientHeight || <span class="number">0</span>;</span><br><span class="line">     &#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>图片元素所在位置</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取元素top</span></span><br><span class="line">   <span class="keyword">var</span> _getElementOffset = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">     <span class="keyword">if</span>(element.offset)&#123;</span><br><span class="line">       <span class="keyword">return</span> element.offset().top;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">var</span> box = element[<span class="number">0</span>].getBoundingClientRect();</span><br><span class="line">     <span class="keyword">return</span> box.top + _getContainerScrollTop() - <span class="built_in">document</span>.documentElement.clientTop;</span><br><span class="line">   &#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>监听容器的滚动事件，判断当前图片元素是否需要加载</li>
+</ul>
+<figure class="highlight openscad"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var _onViewChange = <span class="function"><span class="keyword">function</span><span class="params">(bool)</span> &#123;</span></span><br><span class="line">  var height = _getContainerInnerHeight<span class="params">()</span>,</span><br><span class="line">      scroll = _getContainerScrollTop<span class="params">()</span>,</span><br><span class="line">      eleOffset = container[<span class="number">0</span>] === $window ? _getElementOffset<span class="params">()</span> : _getElementOffsetContainer<span class="params">()</span>,</span><br><span class="line">      windownBottom = container[<span class="number">0</span>] === $window ? height + scroll: height;</span><br><span class="line"></span><br><span class="line">  var remaining = eleOffset - windownBottom,</span><br><span class="line">      shouldLoad = remaining &lt;= <span class="built_in">offset</span>;</span><br><span class="line">  <span class="keyword">if</span><span class="params">(shouldLoad &amp;&amp; !loaded)</span> &#123;</span><br><span class="line">    _renderImage<span class="params">()</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">container.on<span class="params">('scroll', _onViewChange)</span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>加载图片并显示，取消容器的滚动事件</li>
+</ul>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//加载图片</span></span><br><span class="line">       <span class="keyword">var</span> _renderImage = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         loaded = <span class="literal">true</span>;</span><br><span class="line">         <span class="keyword">var</span> imageDom = angular.element(element[<span class="number">0</span>].querySelector(<span class="string">'img'</span>));</span><br><span class="line">         imageDom[<span class="number">0</span>].src = attrs[<span class="string">'ngSrc'</span>];</span><br><span class="line"></span><br><span class="line">         imageDom.on(<span class="string">'load'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">           element.removeClass(<span class="string">'loading'</span>);</span><br><span class="line">           imageDom.css(<span class="string">'visibility'</span>, <span class="string">'visible'</span>);</span><br><span class="line">         &#125;).on(<span class="string">'error'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">           element.addClass(<span class="string">'loading'</span>);</span><br><span class="line">           imageDom.css(<span class="string">'visibility'</span>, <span class="string">'hidden'</span>);</span><br><span class="line">         &#125;);</span><br><span class="line">         container &amp;&amp; container.off(<span class="string">'scroll'</span>, _onViewChange);</span><br><span class="line">       &#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><strong>完整demo</strong> <a href="https://github.com/yuanxj1024/angular-lazy-load-driective" target="_blank" rel="external">gthub</a></p>
+<h3 id="遇到的问题">遇到的问题</h3><ul>
+<li><p>angular中操作dom</p>
+<p>angular中支持jqLite；通过document.getXXX()等方法获取的元素需要使用angular.element()装换成angular中的对象</p>
+<p><a href="https://docs.angularjs.org/api/ng/function/angular.element" target="_blank" rel="external">angular.element</a></p>
+</li>
+</ul>
+<h3 id="参考资料">参考资料</h3><ul>
+<li>很强大的一个<a href="https://github.com/afklm/ng-lazy-image" target="_blank" rel="external">image-lazy-load</a></li>
+</ul>
+
+        
+      </div>
+      <footer>
+        
+          
+  
+  <div class="categories">
+    <a href="/categories/angularjs/">angularjs</a>
+  </div>
+
+          
+  
+  <div class="tags">
+    <a href="/tags/angularjs/">angularjs</a>, <a href="/tags/directive/">directive</a>
+  </div>
+
+          <div class="share">
+  
+
+    
+
+    
+      <div class="g-plusone"></div>
+
+      <script type="text/javascript">
+        window.___gcfg = {lang: 'en-GB'};
+
+        (function() {
+          var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+          po.src = 'https://apis.google.com/js/platform.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+        })();
+      </script>
+    
+
+    
+  
+</div>
+          
+<nav class="article-nav clearfix">
+ 
+ <div class="article-prev" >
+ <a href="/2015/06/19/plugin-for-Gulp/" title="gulp插件开发手札">
+  <i class="fa fa-long-arrow-left"></i>
+  <span>
+  gulp插件开发手札</span>
+</a>
+</div>
+
+
+<div class="article-next">
+<a href="/2015/06/18/learn-css-part-one/"  title="learn css part one">
+ <span>learn css part one
+</span>
+<i class="fa fa-long-arrow-right"></i>
+</a>
+</div>
+
+</nav>
+
+        
+        <div class="clearfix"></div>
+      </footer>
+    </div>
+</article>
+
+
+<section id="comment">
+  <h2 class="title">留言</h2>
+
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright"><div class="padding">
+	
+	  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜尋">
+    <input type="hidden" name="q" value="site:yuanxj1024.github.io">
+  </form>
+</div>
+	
+	  
+<div class="widget recent-post">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2015/09/17/working/">加班的感触</a>
+      </li>
+    
+      <li>
+        <a href="/2015/09/12/javascript-module/">Javascript模块化</a>
+      </li>
+    
+      <li>
+        <a href="/2015/08/04/ionic-commonds/">常用Ionic 命令整理</a>
+      </li>
+    
+      <li>
+        <a href="/2015/08/03/svg-and-canvas-library/">流行的svg/canvas动画库</a>
+      </li>
+    
+      <li>
+        <a href="/2015/07/22/debug-for-X5/">腾讯X5浏览器调试</a>
+      </li>
+    
+  </ul>
+</div>
+
+	
+	  
+<div class="widget category">
+  <h3 class="title">分類</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Tools/">Tools</a><small>4</small></li>
+  
+    <li><a href="/categories/angularjs/">angularjs</a><small>3</small></li>
+  
+    <li><a href="/categories/css/">css</a><small>4</small></li>
+  
+    <li><a href="/categories/experience/">experience</a><small>1</small></li>
+  
+    <li><a href="/categories/ionic/">ionic</a><small>1</small></li>
+  
+    <li><a href="/categories/javascript/">javascript</a><small>3</small></li>
+  
+    <li><a href="/categories/life/">life</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+	
+	  
+<div class="widget tag">
+  <h3 class="title">標籤</h3>
+  
+    <a href="/tags/angularjs/">angularjs<small>3</small></a>
+  
+    <a href="/tags/animation/">animation<small>3</small></a>
+  
+    <a href="/tags/canvas/">canvas<small>1</small></a>
+  
+    <a href="/tags/charles/">charles<small>1</small></a>
+  
+    <a href="/tags/chrome/">chrome<small>2</small></a>
+  
+    <a href="/tags/cmd/">cmd<small>1</small></a>
+  
+    <a href="/tags/css/">css<small>1</small></a>
+  
+    <a href="/tags/css3/">css3<small>1</small></a>
+  
+    <a href="/tags/debug/">debug<small>2</small></a>
+  
+    <a href="/tags/directive/">directive<small>1</small></a>
+  
+    <a href="/tags/experience/">experience<small>2</small></a>
+  
+    <a href="/tags/flexbox/">flexbox<small>1</small></a>
+  
+    <a href="/tags/frent-end/">frent-end<small>1</small></a>
+  
+    <a href="/tags/front-end/">front-end<small>3</small></a>
+  
+    <a href="/tags/gasmark/">gasmark<small>1</small></a>
+  
+    <a href="/tags/github/">github<small>1</small></a>
+  
+    <a href="/tags/gulp/">gulp<small>1</small></a>
+  
+    <a href="/tags/hexo/">hexo<small>1</small></a>
+  
+    <a href="/tags/ionic/">ionic<small>1</small></a>
+  
+    <a href="/tags/javascipt/">javascipt<small>0</small></a>
+  
+    <a href="/tags/javascript/">javascript<small>4</small></a>
+  
+    <a href="/tags/libray/">libray<small>1</small></a>
+  
+    <a href="/tags/life/">life<small>1</small></a>
+  
+    <a href="/tags/plugin/">plugin<small>1</small></a>
+  
+    <a href="/tags/service/">service<small>1</small></a>
+  
+    <a href="/tags/svg/">svg<small>1</small></a>
+  
+    <a href="/tags/tool/">tool<small>4</small></a>
+  
+    <a href="/tags/webapp/">webapp<small>2</small></a>
+  
+    <a href="/tags/弹性布局/">弹性布局<small>1</small></a>
+  
+</div>
+
+	
+</div></aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="padding">
+	<div class="alignleft">
+	  
+	  &copy; 2015 Aaron Yuan
+	  
+	  Powerd by <a href="http://hexo.io/" target="_blank">hexo</a>
+	  and Theme by <a href="https://github.com/halfer53/metro-light" target="_blank">metro-light</a>
+	</div>
+
+	<div class="alignright">
+		
+		
+		
+		
+		
+		
+		
+	</div>
+
+	<div class="clearfix"></div>
+</div>
+
+<div class="scroll-top"><i class="fa fa-arrow-circle-up"></i></div></footer>
+  
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/3.0.4/jquery.imagesloaded.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+<script type="text/javascript">
+$(window).scroll(function() {
+
+    if($(this).scrollTop() > 400) {
+        $('.scroll-top').fadeIn(200);
+    } else {
+        $('.scroll-top').fadeOut(200);
+    }
+});
+
+$('.scroll-top').bind('click', function(e) {
+    e.preventDefault();
+    $('body,html').animate({scrollTop:0},200);
+});
+</script>
+
+
+</body>
+</html>

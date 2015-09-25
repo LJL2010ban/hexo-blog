@@ -1,0 +1,485 @@
+<!DOCTYPE HTML>
+
+<html lang="en">
+  
+<head>
+  <meta charset="utf-8">
+  
+  <title>学习flexbox弹性布局 | 袁旭佳的blog</title>
+  <meta name="author" content="Aaron Yuan">
+  
+  <meta name="description" content="这里讲记录下袁旭佳编程之旅的点滴">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="学习flexbox弹性布局"/>
+  <meta property="og:site_name" content="袁旭佳的blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  
+    <meta http-equiv="Content-Language" content="en"/>
+  
+
+  <link href="/img/favicon.png" rel="icon">
+  
+    <link rel="apple-touch-icon" href="/img/apple-icon.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/apple-icon.png">
+    
+
+  <link rel="alternate" href="/atom.xml" title="袁旭佳的blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  
+  <style type="text/css">
+  /* Tim Pietrusky advanced checkbox hack (Android <= 4.1.2) */
+body{ -webkit-animation: bugfix infinite 1s; }
+@-webkit-keyframes bugfix { from {padding:0;} to {padding:0;} }
+
+  
+
+  
+    article .post-content-index .entry{max-height: 550px; overflow:hidden;}
+  
+</style>
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'null', 'auto');
+  ga('send', 'pageview');
+ 
+</script>
+
+
+
+
+  
+    
+      <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400|Playball' rel='stylesheet' type='text/css'>
+    
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.1.min.js"></script>
+
+  
+
+
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="padding">
+	<div class="alignleft logo">
+	  <h1><a href="/">袁旭佳的blog</a></h1>
+	</div>
+	<nav id="main-nav" class="alignright">
+		<input type="checkbox" id="toggle" />
+		<label for="toggle" class="toggle" data-open="Main Menu" data-close="Close Menu" onclick><i class="fa fa-bars"></i></label>
+	  <ul class="menu">
+	    
+	      <li><a href="/">Home</a></li>
+	    
+	      <li><a href="/archives">Archives</a></li>
+	    
+	      <li><a href="/yuanxj/index.html">AboutMe</a></li>
+	    
+	    
+	  </ul>
+	</nav>
+	<div class="clearfix"></div>
+</div>
+</header>
+  <div id="page-heading-wrap">
+  	<div class="inner">
+      <div class="padding">
+    		
+          <h1>学习flexbox弹性布局</h1>
+          <ul>
+            <li>
+              <span class="heading-span">Posted on: </span>
+              <time datetime="2015-07-07T10:26:19.000Z">2015-07-07</time>
+            </li>
+            
+              <li>
+                <span class="heading-span">By: </span>
+
+                
+                  <a href="/">Aaron Yuan</a>
+                
+
+              </li>
+            
+            <li>
+              <span class="heading-span">With: </span>
+              
+            </li>
+          </ul>
+        
+      </div>
+  	</div>
+  </div>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper" class="padding"><article class="post">
+  
+  
+    <div class="post-content">
+  
+      
+      <div class="entry">
+        
+          <h2 id="基础概念">基础概念</h2><p>伸缩容器：一个设有“display:flex”或“display:inline-flex”的元素</p>
+<p>伸缩项目：伸缩容器的子元素</p>
+<p>主轴、主轴方向：用户代理沿着一个伸缩容器的主轴配置伸缩项目，主轴是主轴方向的延伸。</p>
+<p>主轴起点、主轴终点：伸缩项目的配置从容器的主轴起点边开始，往主轴终点边结束。</p>
+<p>主轴长度、主轴长度属性：伸缩项目的在主轴方向的宽度或高度就是项目的主轴长度，伸缩项目的主轴长度属性是width或height属性，由哪一个对着主轴方向决定。</p>
+<p>侧轴、侧轴方向：与主轴垂直的轴称作侧轴，是侧轴方向的延伸。</p>
+<p>侧轴起点、侧轴终点：填满项目的伸缩行的配置从容器的侧轴起点边开始，往侧轴终点边结束。</p>
+<p>侧轴长度、侧轴长度属性：伸缩项目的在侧轴方向的宽度或高度就是项目的侧轴长度，伸缩项目的侧轴长度属性是「width」或「height」属性，由哪一个对着侧轴方向决定。</p>
+<p><img src="http://7xix26.com1.z0.glb.clouddn.com/flex.png" alt="主轴，侧轴"></p>
+<p><strong>父级元素</strong></p>
+<ul>
+<li><p>display:flex</p>
+</li>
+<li><p>flex-flow</p>
+<ul>
+<li>row    横排</li>
+<li>column    竖排 </li>
+<li>row-reverse</li>
+<li>column-reverse</li>
+<li>wrap    允许折行</li>
+</ul>
+<p><strong>备注</strong></p>
+<p>flex-flow其实是flex-direction(取值有:row ,column, row-reverse, column-reverse) 与 flex-wrap（取值有:wrap, no-wrap, wrap-reverse）的缩写属性。</p>
+</li>
+<li><p><strong>主轴，侧轴</strong>    </p>
+</li>
+<li><p>align-items</p>
+<ul>
+<li>侧轴方向排列方式<ul>
+<li>flex-flow为row是，侧轴是Y轴</li>
+</ul>
+</li>
+<li>flex-start    侧轴起点对奇</li>
+<li>center        侧轴居中</li>
+<li>flex-end    侧轴终点对齐</li>
+<li>stretch        填充侧轴</li>
+</ul>
+</li>
+<li><p>justify-content</p>
+<ul>
+<li>控制子元素之间多余的空白如何处理</li>
+<li>flex-start</li>
+<li>flex-end</li>
+<li>center    </li>
+<li><p>space-around</p>
+<p>所有的子元素均匀的分布在父元素上，表现为居中    </p>
+</li>
+<li><p>space-between</p>
+<p>区别于space-around 首位都在住主轴上，其他子元素居中与父元素的宽上</p>
+</li>
+</ul>
+</li>
+<li><p>align-content</p>
+<ul>
+<li>多行伸缩容器的对其</li>
+<li><strong>仅在伸缩容器在侧轴占有固定的空间时才有用</strong></li>
+<li>flex-start</li>
+<li>flex-end</li>
+<li>center</li>
+<li><p>space-around</p>
+<p>所有的子元素均匀的分布在父元素上，表现为居中    </p>
+</li>
+<li><p>space-between</p>
+<p>区别于space-around 首位都在住主轴上，其他子元素居中与父元素的宽上    </p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>子元素</strong>    </p>
+<ul>
+<li><p>order</p>
+<ul>
+<li>改变布局顺序</li>
+</ul>
+</li>
+<li><p>flex</p>
+<ul>
+<li>让元素可以伸缩<ul>
+<li>当flex-flow为row时，伸缩方向为width</li>
+<li>当flex-flow为column时，伸缩方向为height</li>
+</ul>
+</li>
+<li>没有单位</li>
+<li>可以设置基准值</li>
+<li>设置负向伸缩值</li>
+</ul>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class">.first</span> &#123;</span><br><span class="line">	<span class="attribute">flex</span><span class="value">:<span class="number">1</span>	<span class="number">200px</span>;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="class">.second</span> &#123;</span><br><span class="line">	<span class="attribute">flex</span><span class="value">:<span class="number">2</span>	<span class="number">300px</span>;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="class">.third</span> &#123;</span><br><span class="line">	<span class="attribute">flex</span><span class="value">:<span class="number">1</span> <span class="number">2</span> <span class="number">400px</span>;</span></span><br><span class="line">&#125;</span><br><span class="line">2个参数：</span><br><span class="line">前面的数字为比例值，后面的为基准值</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<pre><code><span class="comment"><figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">	.first &#123;</span><br><span class="line">		flex:<span class="number">1 1 400</span>px<span class="comment">;</span></span><br><span class="line">	&#125;</span><br><span class="line">	.second &#123;</span><br><span class="line">		flex:<span class="number">2 3 600</span>px<span class="comment">;</span></span><br><span class="line">	&#125;</span><br><span class="line">	.third &#123;</span><br><span class="line">		flex:<span class="number">1 2 400</span>px<span class="comment">;</span></span><br><span class="line">	&#125;</span><br><span class="line">	3个参数：</span><br><span class="line">	中间的参数表示加权比</span><br><span class="line">	假设父元素在主轴的方向尺寸为 1100px，在这种情况下，上例中的子元素就会溢出 300px（在主轴方向总尺寸为 1400px），因为设置了负向伸缩值，加权综合为 400px × 1 + 600px × 3 + 400px × 2 = 3000px：</span><br><span class="line">	first 将被移除溢出量的 400px/3000px = 2/15，也就是 40px，因此计算后的尺寸为 360px。</span><br><span class="line">	second 将被移除溢出量的 600px × 3/3000px = 9/15，也就是 180px，因此计算后的尺寸为 420px。</span><br><span class="line">	thrid 将被移除溢出量的 400px × 2/3000px = 4/15，也就是 80px，因此计算后的尺寸为 320px。</span><br><span class="line">所以负向伸缩值越大元素越小！</span><br></pre></td></tr></table></figure></span>
+</code></pre><hr>
+<p>参考资料</p>
+<p><a href="http://dev.oupeng.com/articles/flexbox-basics" target="_blank" rel="external">伸缩布局 — 打开布局天堂之门</a></p>
+<p><a href="http://www.w3cplus.com/css3/flexbox-basics.html" target="_blank" rel="external">Flexbox——快速布局神器</a></p>
+
+        
+      </div>
+      <footer>
+        
+          
+  
+  <div class="categories">
+    <a href="/categories/css/">css</a>
+  </div>
+
+          
+  
+  <div class="tags">
+    <a href="/tags/css/">css</a>, <a href="/tags/flexbox/">flexbox</a>, <a href="/tags/弹性布局/">弹性布局</a>
+  </div>
+
+          <div class="share">
+  
+
+    
+
+    
+      <div class="g-plusone"></div>
+
+      <script type="text/javascript">
+        window.___gcfg = {lang: 'en-GB'};
+
+        (function() {
+          var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+          po.src = 'https://apis.google.com/js/platform.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+        })();
+      </script>
+    
+
+    
+  
+</div>
+          
+<nav class="article-nav clearfix">
+ 
+ <div class="article-prev" >
+ <a href="/2015/07/07/newsletter-1-service/" title="服务定义的简短指南">
+  <i class="fa fa-long-arrow-left"></i>
+  <span>
+  服务定义的简短指南</span>
+</a>
+</div>
+
+
+<div class="article-next">
+<a href="/2015/07/02/communicate-between-controllers/"  title="angular.JS的controller之间如何正确的通信">
+ <span>angular.JS的controller之间如何正确的通信
+</span>
+<i class="fa fa-long-arrow-right"></i>
+</a>
+</div>
+
+</nav>
+
+        
+        <div class="clearfix"></div>
+      </footer>
+    </div>
+</article>
+
+
+<section id="comment">
+  <h2 class="title">留言</h2>
+
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright"><div class="padding">
+	
+	  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜尋">
+    <input type="hidden" name="q" value="site:yuanxj1024.github.io">
+  </form>
+</div>
+	
+	  
+<div class="widget recent-post">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2015/09/17/working/">加班的感触</a>
+      </li>
+    
+      <li>
+        <a href="/2015/09/12/javascript-module/">Javascript模块化</a>
+      </li>
+    
+      <li>
+        <a href="/2015/08/04/ionic-commonds/">常用Ionic 命令整理</a>
+      </li>
+    
+      <li>
+        <a href="/2015/08/03/svg-and-canvas-library/">流行的svg/canvas动画库</a>
+      </li>
+    
+      <li>
+        <a href="/2015/07/22/debug-for-X5/">腾讯X5浏览器调试</a>
+      </li>
+    
+  </ul>
+</div>
+
+	
+	  
+<div class="widget category">
+  <h3 class="title">分類</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Tools/">Tools</a><small>4</small></li>
+  
+    <li><a href="/categories/angularjs/">angularjs</a><small>3</small></li>
+  
+    <li><a href="/categories/css/">css</a><small>4</small></li>
+  
+    <li><a href="/categories/experience/">experience</a><small>1</small></li>
+  
+    <li><a href="/categories/ionic/">ionic</a><small>1</small></li>
+  
+    <li><a href="/categories/javascript/">javascript</a><small>3</small></li>
+  
+    <li><a href="/categories/life/">life</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+	
+	  
+<div class="widget tag">
+  <h3 class="title">標籤</h3>
+  
+    <a href="/tags/angularjs/">angularjs<small>3</small></a>
+  
+    <a href="/tags/animation/">animation<small>3</small></a>
+  
+    <a href="/tags/canvas/">canvas<small>1</small></a>
+  
+    <a href="/tags/charles/">charles<small>1</small></a>
+  
+    <a href="/tags/chrome/">chrome<small>2</small></a>
+  
+    <a href="/tags/cmd/">cmd<small>1</small></a>
+  
+    <a href="/tags/css/">css<small>1</small></a>
+  
+    <a href="/tags/css3/">css3<small>1</small></a>
+  
+    <a href="/tags/debug/">debug<small>2</small></a>
+  
+    <a href="/tags/directive/">directive<small>1</small></a>
+  
+    <a href="/tags/experience/">experience<small>2</small></a>
+  
+    <a href="/tags/flexbox/">flexbox<small>1</small></a>
+  
+    <a href="/tags/frent-end/">frent-end<small>1</small></a>
+  
+    <a href="/tags/front-end/">front-end<small>3</small></a>
+  
+    <a href="/tags/gasmark/">gasmark<small>1</small></a>
+  
+    <a href="/tags/github/">github<small>1</small></a>
+  
+    <a href="/tags/gulp/">gulp<small>1</small></a>
+  
+    <a href="/tags/hexo/">hexo<small>1</small></a>
+  
+    <a href="/tags/ionic/">ionic<small>1</small></a>
+  
+    <a href="/tags/javascipt/">javascipt<small>0</small></a>
+  
+    <a href="/tags/javascript/">javascript<small>4</small></a>
+  
+    <a href="/tags/libray/">libray<small>1</small></a>
+  
+    <a href="/tags/life/">life<small>1</small></a>
+  
+    <a href="/tags/plugin/">plugin<small>1</small></a>
+  
+    <a href="/tags/service/">service<small>1</small></a>
+  
+    <a href="/tags/svg/">svg<small>1</small></a>
+  
+    <a href="/tags/tool/">tool<small>4</small></a>
+  
+    <a href="/tags/webapp/">webapp<small>2</small></a>
+  
+    <a href="/tags/弹性布局/">弹性布局<small>1</small></a>
+  
+</div>
+
+	
+</div></aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="padding">
+	<div class="alignleft">
+	  
+	  &copy; 2015 Aaron Yuan
+	  
+	  Powerd by <a href="http://hexo.io/" target="_blank">hexo</a>
+	  and Theme by <a href="https://github.com/halfer53/metro-light" target="_blank">metro-light</a>
+	</div>
+
+	<div class="alignright">
+		
+		
+		
+		
+		
+		
+		
+	</div>
+
+	<div class="clearfix"></div>
+</div>
+
+<div class="scroll-top"><i class="fa fa-arrow-circle-up"></i></div></footer>
+  
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/3.0.4/jquery.imagesloaded.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+<script type="text/javascript">
+$(window).scroll(function() {
+
+    if($(this).scrollTop() > 400) {
+        $('.scroll-top').fadeIn(200);
+    } else {
+        $('.scroll-top').fadeOut(200);
+    }
+});
+
+$('.scroll-top').bind('click', function(e) {
+    e.preventDefault();
+    $('body,html').animate({scrollTop:0},200);
+});
+</script>
+
+
+</body>
+</html>
